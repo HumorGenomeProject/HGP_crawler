@@ -18,7 +18,7 @@ field_pubdate = "pubdate"
 field_author = "author"
 field_visited = "visited"
 
-class Joke:
+class Joke(object):
 
     def __init__(self, content, source, sourceURL, guid, pubdate=None, title=None, entities=None, comments=None, upvotes=None, downvotes=None, timestamp=None, author=None, visited=False):
         self.content = content
