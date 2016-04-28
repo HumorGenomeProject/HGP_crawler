@@ -1,5 +1,8 @@
 from dbco import db, webapp_db
 from joke import Joke, field_sourceURL
+import generate_ids
+from copy import deepcopy
+import generate_ids
 
 field_exported = 'exported_to_webapp'
 field_visited = 'visited'
@@ -34,8 +37,13 @@ def update_crawler(joke, crawler_bulk):
 
 def export_webapp(joke, webapp_bulk):
     '''
-    Exports a joke into the webapp database
+    Exports a joke into the webapp database. Adds a jokeId field
     '''
+    joke = deepcopy(joke)
+
+    jokeId = generate_ids.create_jokeId()
+    joke['jokeId'] = jokeId
+
     webapp_bulk.find({
         field_sourceURL: joke[field_sourceURL]
     }).upsert().update_one({
