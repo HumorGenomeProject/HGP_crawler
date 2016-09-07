@@ -3,7 +3,7 @@
  * For use when you first setup the crawler
  * creates a collection called "counters" to be used as auto-increment values
  * To run:
- * mongo init_sequences_collection.js
+ * mongo init_hgp_crawler_counters.js
  */
 
 var dbname = "hgp_crawler";

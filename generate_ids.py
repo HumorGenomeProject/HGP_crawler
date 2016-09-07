@@ -9,7 +9,7 @@ def create_jokeId():
             '_id': 'jokeId',
         },
         update={
-            '$inc': { 'value': 1 },
+            '$inc': { 'value': 7 },
         }
     );
 
@@ -28,7 +28,7 @@ def create_userId():
             '_id': 'userId',
         },
         update={
-            '$inc': { 'value': 1 },
+            '$inc': { 'value': 7 },
         }
     );
 

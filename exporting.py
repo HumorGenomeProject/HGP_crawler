@@ -8,7 +8,10 @@ field_exported = 'exported_to_webapp'
 field_visited = 'visited'
 
 def jokes_to_export(limit=1000):
-
+    '''
+    Find jokes that need to be exported from the crawler DB
+    and exported to the webapp db
+    '''
     jokes = db.jokes.find(
         {
             # Only export jokes that have had content crawled
@@ -52,6 +55,10 @@ def export_webapp(joke, webapp_bulk):
 
 
 def main():
+    """
+    This script exports jokes from the hgp_crawler database to the hgp_webapp
+    database.
+    """
     jokes = jokes_to_export(limit=100)
     if jokes:
         crawler_bulk = db.jokes.initialize_ordered_bulk_op()
