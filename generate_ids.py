@@ -11,7 +11,7 @@ def create_jokeId():
         update={
             '$inc': { 'value': 7 },
         }
-    );
+    )
 
     result = count.get('value')
     if result:
@@ -30,7 +30,7 @@ def create_userId():
         update={
             '$inc': { 'value': 7 },
         }
-    );
+    )
 
     result = count.get('value')
     if result:

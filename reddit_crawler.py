@@ -2,6 +2,9 @@ import requests
 import requests.auth
 import json
 from joke import Joke
+import stamps
+import hgp_jokes
+from datetime import datetime
 
 secretsfile = "secrets.json"
 user_agent = "Humor Genome Project Reddit Crawler"
@@ -61,14 +64,18 @@ def get_posts_from_subreddit(token, subreddit, last_timestamp=None):
 		title = actual_post['title']
 		content = actual_post['selftext']
 		sourceUrl = actual_post['url']
-		pubdate = int(actual_post['created'])
+		pubdate = datetime.fromtimestamp(int(actual_post['created']))
 
 		guid = sourceUrl
 
 		if pubdate >= last_timestamp:
-			# Create and store the joke only if it is newer than the last timestamp
+			print "PUB: {}\tTIMESTAMP: {}".format(pubdate, last_timestamp)
+			# Create and store the joke only if it is newer than the last timestamp we've seen
 			aJoke = Joke(content, 'reddit', sourceUrl, guid, pubdate=pubdate, title=title, upvotes=upvotes, downvotes=downvotes)
 			jokes.append(aJoke)
+
+		else:
+			print "TIMESTAMP OLD: {}".format(pubdate)
 
 	return jokes
 
@@ -93,16 +100,13 @@ def main():
 	if token is None:
 		raise ValueError("Failed to create a token for the reddit API")
 
-	jokes = get_posts_from_subreddit(token, "jokes")
-	print jokes
-
-
-	# TODO
-	# For now we are just printing the jokes. Must use timestamps and the db
-	# to track which jokes we've already seen
-
-	# Also, must revisit these permalinks since most jokes are brand-new. Want
-	# updated upvote/downvote/comments for each
+	source = "reddit" + ".jokes"
+	last_timestamp = stamps.load_timestamp_for_source(source)
+	jokes = get_posts_from_subreddit(token, "jokes", last_timestamp)
+	# Save the jokes
+	hgp_jokes.saveJokes(jokes)
+	# Update the timestamps collection
+	stamps.save_timestamp_for_source(source, stamp=datetime.utcnow())
 
 
 if __name__ == '__main__':
