@@ -4,7 +4,7 @@ import json
 from joke import Joke
 import stamps
 import hgp_jokes
-from datetime import datetime
+from datetime import datetime, timedelta
 
 secretsfile = "secrets.json"
 user_agent = "Humor Genome Project Reddit Crawler"
@@ -41,41 +41,42 @@ def get_posts_from_subreddit(token, subreddit, last_timestamp=None):
 	"""
 	authorization = "bearer " +  token
 	headers = {"Authorization": authorization, "User-Agent": user_agent}
-	url = "https://oauth.reddit.com/r/{}/new".format(subreddit)
-
-	response = requests.get(url, headers=headers) # Most endpoints in the API don't work for some reason; this one does
-	results = response.json()
-
-	if 'data' not in results:
-		return None
-
-	data = results['data']
-
-	if 'children' not in data:
-		return None
-
-	posts = data['children']
 
 	jokes = []
-	for post in posts:
-		actual_post = post['data']
-		upvotes = actual_post['ups']
-		downvotes = actual_post['downs']
-		title = actual_post['title']
-		content = actual_post['selftext']
-		sourceUrl = actual_post['url']
-		pubdate = datetime.fromtimestamp(int(actual_post['created']))
+	sub_pages = ['new', 'rising', 'hot']
 
-		guid = sourceUrl
+	for sub_page in sub_pages:
 
-		if pubdate >= last_timestamp:
-			print "PUB: {}\tTIMESTAMP: {}".format(pubdate, last_timestamp)
-			# Create and store the joke only if it is newer than the last timestamp we've seen
-			aJoke = Joke(content, 'reddit', sourceUrl, guid, pubdate=pubdate, title=title, upvotes=upvotes, downvotes=downvotes)
-			jokes.append(aJoke)
+		url = "https://oauth.reddit.com/r/{}/new".format(subreddit)
 
-		else:
-			print "TIMESTAMP OLD: {}".format(pubdate)
+		response = requests.get(url, headers=headers) # Most endpoints in the API don't work for some reason; this one does
+		results = response.json()
+
+		if 'data' not in results:
+			return None
+
+		data = results['data']
+
+		if 'children' not in data:
+			return None
+
+		posts = data['children']
+
+		for post in posts:
+			actual_post = post['data']
+			upvotes = actual_post['ups']
+			downvotes = actual_post['downs']
+			title = actual_post['title']
+			content = actual_post['selftext']
+			sourceUrl = actual_post['url']
+			pubdate = datetime.fromtimestamp(int(actual_post['created']))
+
+			guid = sourceUrl
+
+			if not last_timestamp or pubdate >= last_timestamp:
+				# These jokes are new compared to the last times we checked. Keep them
+				aJoke = Joke(content, 'reddit', sourceUrl, guid, pubdate=pubdate, title=title, upvotes=upvotes, downvotes=downvotes)
+				jokes.append(aJoke)
 
 	return jokes
 
@@ -100,13 +101,27 @@ def main():
 	if token is None:
 		raise ValueError("Failed to create a token for the reddit API")
 
-	source = "reddit" + ".jokes"
-	last_timestamp = stamps.load_timestamp_for_source(source)
-	jokes = get_posts_from_subreddit(token, "jokes", last_timestamp)
-	# Save the jokes
-	hgp_jokes.saveJokes(jokes)
-	# Update the timestamps collection
-	stamps.save_timestamp_for_source(source, stamp=datetime.utcnow())
+
+	subreddits = ['jokes', 'humor', 'funny']
+	for subreddit in subreddits:
+		source = "reddit" + "." + subreddit
+		last_timestamp = stamps.load_timestamp_for_source(source)
+		jokes = get_posts_from_subreddit(token, subreddit, last_timestamp)
+		
+		# Update the timestamps collection
+		current_time = datetime.utcnow()
+		# Timestamps by reddit are 4 hours ahead
+		adjusted_timestamp = current_time + timedelta(hours=4)
+		stamps.save_timestamp_for_source(source, stamp=adjusted_timestamp)
+
+		# Save the jokes
+		if jokes:
+			result = hgp_jokes.saveJokes(jokes)
+			if result:
+				# Print how many modified and how many updated
+				local_time = datetime.now()
+				print "Subreddit: /r/{}\tCreated: {}\tModified: {}\tTimestamp: {}".format(subreddit,
+					result['nUpserted'], result['nModified'], local_time)
 
 
 if __name__ == '__main__':

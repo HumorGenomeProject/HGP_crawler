@@ -21,11 +21,13 @@ def upsertJokes(jokes):
             })
 
         result = bulk.execute()
-        print result
+        return result
+    return None
 
 
 def saveJokes(foundJokes):
     """Add valid jokes to the database."""
 
     jokes = filter(lambda joke: isinstance(joke, Joke), foundJokes)
-    upsertJokes(jokes)
+    result = upsertJokes(jokes)
+    return result
