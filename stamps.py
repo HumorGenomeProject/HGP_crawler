@@ -13,11 +13,13 @@ def load_timestamp_for_source(source):
         return None
 
 def save_timestamp_for_source(source, stamp=datetime.utcnow()):
-    if not stamp:
-        stamp = datetime.utcnow()
+    """
+    Update the timestamp for a given source with the new stamp.
+    """
 
-    # Find a stamp with the given source and update the timestamp. Upsert
-    # will do an insert if the source previously not in the db.
+    # Find an existing timesstamp with the given source and update the
+    # timestamp. Upsert will do an insert if the source previously not
+    # in the db.
     db.stamps.update({'source': source},
         { 'timestamp': stamp, 'source': source },
         upsert=True)

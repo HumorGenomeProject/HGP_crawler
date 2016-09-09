@@ -3,6 +3,8 @@
 ## Setup
 
 ### MongoDB
+__You will only do this once for the project, during the first-time setup on your machine.__
+
 Run the following in a terminal:
 ```mongo --quiet init_counters.js```
 This will create the sequences collection, which is used by the `exporting.py` to export jokes from the `hgp_crawler` database to the `hgp_webapp` database.
@@ -13,7 +15,7 @@ You must be running Python 2.7 to run this code.
 #### Install Dependencies
 In a terminal, run the following:
 ```bash
-pip install pymongo flask --user
+pip install pymongo --user
 ```
 
 ## Running

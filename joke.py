@@ -1,4 +1,3 @@
-from collections import namedtuple
 import json
 from dbco import * # this imports the db connection
 from datetime import datetime
