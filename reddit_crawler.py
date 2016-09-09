@@ -3,7 +3,7 @@ import requests.auth
 import json
 from joke import Joke
 import stamps
-import hgp_jokes
+import save_jokes
 from datetime import datetime, timedelta
 
 secretsfile = "secrets.json"
@@ -117,7 +117,7 @@ def main():
 		# Save the jokes
 		local_time = datetime.now()
 		if jokes:
-			result = hgp_jokes.saveJokes(jokes)
+			result = save_jokes.saveJokes(jokes)
 			if result:
 				# Print how many modified and how many updated
 				print "Subreddit: /r/{}\t  |  Created: {}  |  Modified: {}  |  Timestamp: {}".format(subreddit,
