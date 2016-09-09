@@ -17,7 +17,7 @@ def create_jokeId():
     if result:
         return int(result)
     else:
-        return 0
+        return None
 
 def create_userId():
     '''
@@ -36,15 +36,4 @@ def create_userId():
     if result:
         return int(result)
     else:
-        return 0
-
-
-def test():
-    val = create_jokeId()
-    print "jokeId: {}".format(val)
-    val = create_userId()
-    print "userId: {}".format(val)
-
-
-if __name__ == '__main__':
-    test()
+        return None

@@ -68,15 +68,14 @@ def main():
             update_crawler(joke, crawler_bulk)
             export_webapp(joke, webapp_bulk)
 
-        if jokes:
-            # Only execute if any unexported jokes to execute on
-            crawler_result = crawler_bulk.execute()
-            print "Crawler result: \n{}".format(crawler_result)
-            webapp_result = webapp_bulk.execute()
-            print "\nWebapp result: \n{}".format(webapp_result)
+        # Only execute if any unexported jokes to execute on
+        crawler_result = crawler_bulk.execute()
+        print "Crawler result: \n{}".format(crawler_result)
+        webapp_result = webapp_bulk.execute()
+        print "\nWebapp result: \n{}".format(webapp_result)
 
-        else:
-            print "No unexported jokes found"
+    else:
+        print "No unexported jokes found"
 
 if __name__ == '__main__':
     main()

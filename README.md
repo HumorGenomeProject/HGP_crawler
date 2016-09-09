@@ -1,23 +1,30 @@
-#Crawler
+# HGP Joke Crawler
 
-###Goal:
+## Setup
 
-From a few RSS feeds of various sources, collect jokes and store into our own DB
+### MongoDB
+Run the following in a terminal:
+```mongo --quiet init_counters.js```
+This will create the sequences collection, which is used by the `exporting.py` to export jokes from the `hgp_crawler` database to the `hgp_webapp` database.
 
-Installation Guide
+### Python
+You must be running Python 2.7 to run this code.
 
-1. Install Python 2.
-1. Install `pip` if you're on Windows.
-1. Install all of the dependencies in `Dependnencies.txt`.
-1. Run `python crawler.py`.
+#### Install Dependencies
+In a terminal, run the following:
+```bash
+pip install pymongo flask --user
+```
 
-##Dependencies
-- Python 2.7
-- Beautiful Soup 4 (pip install beautifulsoup4)
-- Pymongo: For Database interaction (pip install pymongo)
-- Dateutil : Date Parsing (pip install python-dateutil)
-- Praw: Wrapper for Reddit API (pip install praw)
-- Pytz: For timezones (pip install pytz)
+## Running
+To run the crawler once, run the following:
+```python reddit_crawler.py```
+
+To run the crawler at an interval, set up a cron job on whichever server/virtual machine this will run on, and have it point to the `run_crawler.sh` script.
+
+## Obtaining the `secrets.json` file
+The `reddit_crawler.py` file relies on a file called `secrets.json` which is not published on GitHub because it contains API keys. To obtain the file, check the Georgia Tech GitHub (github.gatech.edu) for the Humor Genome group and obtain it from there. It will most likely be published as a GitHub gist.
+
 
 Contact:
 ===========

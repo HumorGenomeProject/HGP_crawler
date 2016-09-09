@@ -115,13 +115,15 @@ def main():
 		stamps.save_timestamp_for_source(source, stamp=adjusted_timestamp)
 
 		# Save the jokes
+		local_time = datetime.now()
 		if jokes:
 			result = hgp_jokes.saveJokes(jokes)
 			if result:
 				# Print how many modified and how many updated
-				local_time = datetime.now()
-				print "Subreddit: /r/{}\tCreated: {}\tModified: {}\tTimestamp: {}".format(subreddit,
+				print "Subreddit: /r/{}\t  |  Created: {}  |  Modified: {}  |  Timestamp: {}".format(subreddit,
 					result['nUpserted'], result['nModified'], local_time)
+		else:
+			print "No jokes on Subreddit: /r/{}  |  Timestamp: {}".format(subreddit, local_time)
 
 
 if __name__ == '__main__':
