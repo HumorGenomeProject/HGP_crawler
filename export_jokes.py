@@ -42,7 +42,6 @@ def export_webapp(joke, webapp_bulk):
     '''
     Exports a joke into the webapp database. Adds a jokeId field
     '''
-    joke = deepcopy(joke)
 
     jokeId = generate_ids.create_jokeId()
     joke['jokeId'] = jokeId
@@ -66,7 +65,11 @@ def main():
 
         for joke in jokes:
             update_crawler(joke, crawler_bulk)
-            export_webapp(joke, webapp_bulk)
+            # Convert to a python Joke object
+            joke_obj = Joke.from_json(joke)
+            # Then, store it in webapp as json w/ only the fields relevant
+            # to webapp
+            export_webapp(joke_obj.get_export_json(), webapp_bulk)
 
         # Only execute if any unexported jokes to execute on
         crawler_result = crawler_bulk.execute()

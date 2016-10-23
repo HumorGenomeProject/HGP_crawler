@@ -1,5 +1,6 @@
 from dbco import db
 
+
 def create_jokeId():
     '''
     Returns a unique jokeId. Increments count in counter collection
@@ -9,7 +10,7 @@ def create_jokeId():
             '_id': 'jokeId',
         },
         update={
-            '$inc': { 'value': 7 },
+            '$inc': { 'value': 7 },  # update by a constant prime number
         }
     )
 
@@ -28,7 +29,7 @@ def create_userId():
             '_id': 'userId',
         },
         update={
-            '$inc': { 'value': 7 },
+            '$inc': { 'value': 7 },  # update by a constant prime number
         }
     )
 

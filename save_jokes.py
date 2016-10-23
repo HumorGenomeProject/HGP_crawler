@@ -1,4 +1,3 @@
-import json
 from dbco import db
 from pymongo.bulk import BulkOperationBuilder
 from joke import Joke
@@ -6,8 +5,8 @@ from joke import Joke
 
 def insertJokes(db, validJokes):
     for joke in validJokes:
-        jokeJson = joke.createJson()
-        db.jokes.update({'guid': joke.guid}, {'$set': jokeJson}, upsert=True)
+        jokeJson = joke.create_json()
+        db.jokes.update({'sourcleURL': joke.sourcleURL}, {'$set': jokeJson}, upsert=True)
 
 
 def upsertJokes(jokes):
@@ -17,7 +16,7 @@ def upsertJokes(jokes):
             bulk.find({
                 'sourceURL': joke.sourceURL
             }).upsert().update_one({
-                '$set': joke.createJson()
+                '$set': joke.create_json()
             })
 
         result = bulk.execute()
