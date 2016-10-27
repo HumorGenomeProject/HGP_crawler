@@ -47,6 +47,7 @@ def get_posts_from_subreddit(token, subreddit, last_timestamp=None):
 
 	for sub_page in sub_pages:
 
+		# TODO: Use sub_page to generate a proper URL
 		url = "https://oauth.reddit.com/r/{}/new".format(subreddit)
 
 		response = requests.get(url, headers=headers) # Most endpoints in the API don't work for some reason; this one does
@@ -62,6 +63,7 @@ def get_posts_from_subreddit(token, subreddit, last_timestamp=None):
 
 		posts = data['children']
 
+		source = "reddit"
 		for post in posts:
 			actual_post = post['data']
 			upvotes = actual_post['ups']
@@ -71,11 +73,9 @@ def get_posts_from_subreddit(token, subreddit, last_timestamp=None):
 			sourceUrl = actual_post['url']
 			pubdate = datetime.fromtimestamp(int(actual_post['created']))
 
-			guid = sourceUrl
-
 			if not last_timestamp or pubdate >= last_timestamp:
 				# These jokes are new compared to the last times we checked. Keep them
-				aJoke = Joke(content, 'reddit', sourceUrl, guid, pubdate=pubdate, title=title, upvotes=upvotes, downvotes=downvotes)
+				aJoke = Joke(title, content, source, sourceUrl, pubdate=pubdate, upvotes=upvotes, downvotes=downvotes)
 				jokes.append(aJoke)
 
 	return jokes
