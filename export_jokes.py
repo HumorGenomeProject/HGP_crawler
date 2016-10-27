@@ -81,4 +81,5 @@ def main():
         print "No unexported jokes found"
 
 if __name__ == '__main__':
+    # Run the main function
     main()
